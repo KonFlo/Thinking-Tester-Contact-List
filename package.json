@@ -1,0 +1,21 @@
+{
+  "name": "contact_list_app",
+  "version": "1.0.0",
+  "description": "Playwright TypeScript automated tests for Thinking Tester Contact List App",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "typescript": "^5.3.3"
+  }
+}
