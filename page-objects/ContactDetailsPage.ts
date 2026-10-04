@@ -20,10 +20,12 @@ export class ContactDetailsPage {
   }
 
   async deleteContact() {
-    // Handle the JavaScript confirm dialog before clicking delete
+    // Listen for the native confirm dialog and accept it
     this.page.once('dialog', async (dialog) => {
       await dialog.accept();
     });
+
+    // Click the delete button
     await this.deleteButton.click();
   }
 }
