@@ -1,5 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 
+/**
+ * Data structure representing optional and required contact creation fields.
+ */
 export interface ContactData {
   firstName: string;
   lastName: string;
@@ -14,6 +17,9 @@ export interface ContactData {
   country?: string;
 }
 
+/**
+ * Page Object Model for the Add Contact page (`/addContact`).
+ */
 export class AddContactPage {
   readonly page: Page;
   readonly firstNameInput: Locator;
@@ -30,6 +36,9 @@ export class AddContactPage {
   readonly submitButton: Locator;
   readonly errorMessage: Locator;
 
+  /**
+   * Initializes page locators for form inputs, actions, and validation messages.
+   */
   constructor(page: Page) {
     this.page = page;
     this.firstNameInput = page.locator('#firstName');
@@ -47,6 +56,9 @@ export class AddContactPage {
     this.errorMessage = page.locator('#error');
   }
 
+  /**
+   * Populates form fields selectively based on provided contact data.
+   */
   async fillContactForm(data: ContactData) {
     if (data.firstName) await this.firstNameInput.fill(data.firstName);
     if (data.lastName) await this.lastNameInput.fill(data.lastName);
@@ -61,6 +73,9 @@ export class AddContactPage {
     if (data.country) await this.countryInput.fill(data.country);
   }
 
+  /**
+   * Submits the contact creation form.
+   */
   async submit() {
     await this.submitButton.click();
   }

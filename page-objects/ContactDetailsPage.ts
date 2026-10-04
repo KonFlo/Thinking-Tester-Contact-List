@@ -1,5 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 
+/**
+ * Page Object Model for the Contact Details page (`/contactDetails`).
+ */
 export class ContactDetailsPage {
   readonly page: Page;
   readonly firstNameSpan: Locator;
@@ -9,6 +12,9 @@ export class ContactDetailsPage {
   readonly phoneSpan: Locator;
   readonly deleteButton: Locator;
 
+  /**
+   * Initializes page locators for contact details display fields and action controls.
+   */
   constructor(page: Page) {
     this.page = page;
     this.firstNameSpan = page.locator('#firstName');
@@ -19,13 +25,16 @@ export class ContactDetailsPage {
     this.deleteButton = page.locator('#delete');
   }
 
+  /**
+   * Handles native confirmation dialog and clicks the delete button to remove the contact.
+   */
   async deleteContact() {
-    // Listen for the native confirm dialog and accept it
-    this.page.once('dialog', async (dialog) => {
-      await dialog.accept();
-    });
-
-    // Click the delete button
-    await this.deleteButton.click();
+    // Set up dialog handler and click action concurrently
+    await Promise.all([
+      this.page.waitForEvent('dialog').then(async (dialog) => {
+        await dialog.accept();
+      }),
+      this.deleteButton.click()
+    ]);
   }
 }

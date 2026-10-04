@@ -1,9 +1,0 @@
-node -v / node --version
-npm -v / npm --version
-npm init playwright@latest
-npx playwright --version
-npx playwright test --project=chromium --project="Google Chrome"
-npx playwright test sample -g "My Second Test" --headed
-npx playwright test --retries {number}
-npx playwright show-report
-npx playwright codegen

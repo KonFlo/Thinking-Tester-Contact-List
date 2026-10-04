@@ -6,6 +6,9 @@ import { AddContactPage } from '../page-objects/AddContactPage';
 import { ContactDetailsPage } from '../page-objects/ContactDetailsPage';
 import { generateRandomUser } from '../helpers/utils';
 
+/**
+ * End-to-End Test Suite for the Thinking Tester Contact List Application.
+ */
 test.describe('Thinking Tester Contact List Application Suite', () => {
   let loginPage: LoginPage;
   let addUserPage: AddUserPage;
@@ -13,6 +16,10 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
   let addContactPage: AddContactPage;
   let contactDetailsPage: ContactDetailsPage;
 
+  /**
+   * Fresh session setup: Instantiates page objects, registers a new random user,
+   * and verifies successful redirection to the main contact list dashboard.
+   */
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     addUserPage = new AddUserPage(page);
@@ -30,7 +37,7 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     await expect(page).toHaveURL(/.*\/contactList/);
   });
 
-  test('Requirement 1: Sign up with a new user, add a new contact, and validate on details page', async () => {
+  test('Sign up with a new user, add a new contact, and validate it on the contact details page', async () => {
     const contactData = {
       firstName: 'Alice',
       lastName: 'Smith',
@@ -48,6 +55,9 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     await addContactPage.fillContactForm(contactData);
     await addContactPage.submit();
 
+    // Add this explicit wait for navigation before asserting table elements
+    await expect(contactListPage.page).toHaveURL(/.*\/contactList/);
+
     // Verify returning to contact list page and contact appears in table
     await expect(contactListPage.contactRows).toHaveCount(1);
     await expect(contactListPage.contactRows.first()).toContainText(`${contactData.firstName} ${contactData.lastName}`);
@@ -63,7 +73,7 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     await expect(contactDetailsPage.phoneSpan).toHaveText(contactData.phone);
   });
 
-  test('Requirement 2: Try to add a contact with an invalid date of birth and validate error message', async () => {
+  test('Try to add a contact with an invalid date of birth and validate the error message', async () => {
     await contactListPage.clickAddContact();
 
     const invalidContactData = {
@@ -80,7 +90,7 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     await expect(addContactPage.errorMessage).toContainText('Contact validation failed: birthdate: Birthdate is invalid');
   });
 
-  test('Requirement 3: Delete an existing contact', async () => {
+  test('Delete an existing contact', async () => {
     // 1. Add contact
     const contactData = {
       firstName: 'Charlie',
@@ -92,6 +102,9 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     await addContactPage.fillContactForm(contactData);
     await addContactPage.submit();
 
+    // Ensure form submission redirect completes before asserting table rows
+    await expect(contactListPage.page).toHaveURL(/.*\/contactList/);
+
     // Assert contact added
     const fullName = `${contactData.firstName} ${contactData.lastName}`;
     await expect(contactListPage.contactRows).toHaveCount(1);
@@ -99,7 +112,7 @@ test.describe('Thinking Tester Contact List Application Suite', () => {
     // 2. Open contact details
     await contactListPage.clickContactByName(fullName);
 
-    // 3. Delete contact (handles alert dialog internally)
+    // 3. Delete contact
     await contactDetailsPage.deleteContact();
 
     // 4. Validate redirected to contact list and table is empty
